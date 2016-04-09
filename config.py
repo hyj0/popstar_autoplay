@@ -1,0 +1,4 @@
+
+imageDir = "./imagefile/"
+
+corefileDir = "./corefile/"
