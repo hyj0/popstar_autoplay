@@ -24,6 +24,7 @@ from PIL import Image
 
 from common import anorm, getsize
 from config import imageDir, corefileDir
+from sketchImage.SketchImage import sketch
 
 FLANN_INDEX_KDTREE = 1  # bug: flann enums are missing
 FLANN_INDEX_LSH    = 6
@@ -149,22 +150,36 @@ def explore_match(win, img1, img2, kp_pairs, status = None, H = None):
     cv2.setMouseCallback(win, onmouse)
     return vis
 
-def TakeModeObj():
+def TakeModeObj(UseSketchImage = False):
     print(__doc__)
-
     import sys, getopt
     opts, args = getopt.getopt(sys.argv[1:], '', ['feature='])
     opts = dict(opts)
     feature_name = opts.get('--feature', 'akaze')
+    fn1sk = ''
+    fn2sk = ''
     try:
         fn1, fn2 = args
     except:
         # fn1 = '../data/box.png'
         fn1 = imageDir + "downbot.png"
         fn2 = imageDir + 'game_org.png'
+        if UseSketchImage == True:
+            fn1 = imageDir + "moble_mod.png"
 
+        if UseSketchImage:
+            skfn1 = sketch(Image.open(fn1), 1)
+            skfn1.save(imageDir + "skfn1.png")
+            skfn2 = sketch(Image.open(fn2), 1)
+            skfn2.save(imageDir + "skfn2.png")
+            fn1sk = imageDir + "skfn1.png"
+            fn2sk = imageDir + "skfn2.png"
     img1 = cv2.imread(fn1, 0)
     img2 = cv2.imread(fn2, 0)
+    if UseSketchImage:
+        img1 = cv2.imread(fn1sk, 0)
+        img2 = cv2.imread(fn2sk, 0)
+
     detector, matcher = init_feature(feature_name)
 
     if img1 is None:
@@ -204,6 +219,8 @@ def TakeModeObj():
         pilimage1 = Image.open(fn1)
         pilimageMod = Image.open(imageDir + "game5.png")
         box = (g_corner[0][0]-pilimage1.width, g_corner[1][1]-pilimageMod.height, g_corner[2][0]-pilimage1.width, g_corner[3][1]-pilimage1.height)
+        if UseSketchImage:
+            box = (g_corner[0][0]-pilimage1.width, g_corner[1][1], g_corner[2][0] - pilimage1.width, g_corner[3][1])
         print("box:", box)
         region = pilimage2.crop(box)
         # region.show()
