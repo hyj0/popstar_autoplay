@@ -6,7 +6,7 @@ import json
 
 from CreateSteps import createStep
 from config import imageDir, corefileDir
-from find_obj import TakeModeObj
+from find_obj import TakeModeObj, TakeModeObjUseCalc
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -22,8 +22,8 @@ class PlayHandler(tornado.web.RequestHandler):
             with open(filepath, 'wb') as up:  # 有些文件需要已二进制的形式存储，实际中可以更改
                 up.write(meta['body'])
         #获取图像位置
-        TakeModeObj(UseSketchImage=True)
-
+        # TakeModeObj(UseSketchImage=True)
+        TakeModeObjUseCalc()
         #生成步骤
         createStep()
 

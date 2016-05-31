@@ -94,7 +94,7 @@ def explore_match(win, img1, img2, kp_pairs, status = None, H = None):
         print("corners:", corners)
         global g_corner
         g_corner = corners
-        return vis
+        # return vis
 
     if status is None:
         status = np.ones(len(kp_pairs), np.bool_)
@@ -231,5 +231,20 @@ def TakeModeObj(UseSketchImage = False):
     cv2.waitKey()
     cv2.destroyAllWindows()
 
+def TakeModeObjUseCalc():
+    heightFix = ((685.0/1920)+(343.0/960))/2
+    print("heightFix", heightFix)
+    im = Image.open(imageDir+"./game_org.png")
+    width, height= im.size
+    posit = (0, int(heightFix*height), width, int(heightFix*height+width))
+    print("posit", posit)
+    region = im.crop(posit)
+    region.save(imageDir+"core.png")
+    f = open(corefileDir + "posit.txt", "w")
+    f.write(str(posit))
+    f.close()
+
+
 if __name__ == '__main__':
-    TakeModeObj()
+    # TakeModeObj(UseSketchImage=True)
+    TakeModeObjUseCalc()
